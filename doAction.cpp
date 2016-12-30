@@ -200,15 +200,19 @@ int doAction::printTable( )
     int sum = 0;
         cout << endl;
         cout << endl;
+
     for( int r_i = 0 ; r_i < 4 ; r_i++ )
     {
+        cout << "\t -----------------------------------------------------------------"<<endl;
+        cout << "\t |";
         for( int c_i = 0 ; c_i < 4 ; c_i++)
         {
-            cout << mat[r_i][c_i] << "\t";
+            cout <<  "\t" << mat[r_i][c_i] << "\t |";
             sum+= mat[r_i][c_i];
         }
         cout << endl;
     }
+    cout << "\t -----------------------------------------------------------------"<<endl;
     return sum;
 }
 
