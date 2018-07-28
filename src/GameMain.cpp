@@ -11,7 +11,7 @@ int main() {
     int countMoves = 0;
     char playerName[40] = {0};
     Game2048 game;
-    tGestureType userGesture = GESTURE_LEFT;
+    tGestureType userGesture;
 
     cout << "++++++++++ 2048 Game ++++++++++" << endl << endl;
     cout << "Enter Player Name: ";
@@ -21,31 +21,36 @@ int main() {
 
     while(1) {
         system( "clear" );
+        setColor( BOLD_BLUE );
         cout << "++++++++++ 2048 Game ++++++++++" << endl ;
         cout << "Welcome " << playerName << endl;
         cout << "Moves: " << countMoves << " Score: " << countScore ;
+        setColor( COLOR_RESET );
         countScore = game.printTable( );
 
         char ch;
         ch = getch();
-        switch( ch ) {
-            case 'a':
-                userGesture = GESTURE_LEFT;
-                break;
-            case 'd':
-                userGesture = GESTURE_RIGHT;
-                break;
-            case 'w':
-                userGesture = GESTURE_UP;
-                break;
-            case 's':
-                userGesture = GESTURE_DOWN;
-                break;
-            default:
-                printf("Invalid Key");
-                break;
+        if (ch == '\033') {
+            getch();
+            ch = getch();
+            switch( ch ) {
+                case 'D':
+                    userGesture = GESTURE_LEFT;
+                    break;
+                case 'C':
+                    userGesture = GESTURE_RIGHT;
+                    break;
+                case 'A':
+                    userGesture = GESTURE_UP;
+                    break;
+                case 'B':
+                    userGesture = GESTURE_DOWN;
+                    break;
+                default:
+                    //printf("Invalid Key");
+                    break;
+            }
         }
-
         if( isValidGesture(userGesture) ) {
             game.doShift(userGesture);
             game.doSum(userGesture);
@@ -56,6 +61,8 @@ int main() {
 
         if( game.wonOrLose() )
            break;
+
+       userGesture = GESTURE_INVALID;
     }
 
     system( "clear" );
