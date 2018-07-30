@@ -7,7 +7,7 @@ using namespace std;
 
 Game2048::Game2048( void ){
     for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
-        for( int r_i = 1; r_i < 4 ; r_i++ ) {
+        for( int r_i = 0; r_i < 4 ; r_i++ ) {
             mat[r_i][c_i] = 0;
         }
     }
