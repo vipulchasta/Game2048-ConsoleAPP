@@ -1,5 +1,6 @@
 #include<iostream>
 #include<stdlib.h>
+#include<string.h>
 #include "conio.h"
 #include "Game2048.h"
 
@@ -7,8 +8,6 @@ using namespace std;
 
 
 int main() {
-    int countScore = 0;
-    int countMoves = 0;
     char playerName[40] = {0};
     Game2048 game;
     tGestureType userGesture;
@@ -16,17 +15,27 @@ int main() {
     cout << "++++++++++ 2048 Game ++++++++++" << endl << endl;
     cout << "Enter Player Name: ";
     setColor( BOLD_BLUE );
-    cin >> playerName;
+    //gets(playerName);
+    fgets(playerName,sizeof(playerName),stdin);
     setColor( COLOR_RESET );
 
     while(1) {
         system( "clear" );
         setColor( BOLD_BLUE );
         cout << "++++++++++ 2048 Game ++++++++++" << endl ;
-        cout << "Welcome " << playerName << endl;
-        cout << "Moves: " << countMoves << " Score: " << countScore ;
+        cout << "Welcome ";
+        puts(playerName);
+        cout << "Moves: " << game.getCountMoves() << " Score: " << game.getScore() ;
         setColor( COLOR_RESET );
-        countScore = game.printTable( );
+        game.printTable( );
+
+        cout << endl << endl;
+        setColor( GREEN );
+        cout << "++++++++++ Game Instructions ++++++++++" << endl ;
+        cout << "=> Use Arrow Keys to Move Tiles" << endl ;
+        cout << "=> Use 'u' to Undo Last Operation" << endl ;
+        setColor( COLOR_RESET );
+
 
         char ch;
         ch = getch();
@@ -50,13 +59,11 @@ int main() {
                     //printf("Invalid Key");
                     break;
             }
+        } else if( ch == 'u' ) {
+            game.doUndo();
         }
         if( isValidGesture(userGesture) ) {
-            game.doShift(userGesture);
-            game.doSum(userGesture);
-            game.doShift(userGesture);
-            game.placeOnce();
-            countMoves++;
+            game.doAction(userGesture);
         }
 
         if( game.wonOrLose() )
@@ -70,7 +77,7 @@ int main() {
     game.printTable( );
     cout << "++++++++++ Game Over ++++++++++" << endl;
     cout << "Player Name: " << playerName << endl;
-    cout << "Moves: " << countMoves << " Score: " << countScore << endl;
+    cout << "Moves: " << game.getCountMoves() << " Score: " << game.getScore() << endl;
 
     return 0;
 }
