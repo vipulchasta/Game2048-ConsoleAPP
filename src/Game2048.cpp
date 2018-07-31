@@ -13,9 +13,38 @@ Game2048::Game2048( void ){
     }
     placeOnce( );
     placeOnce( );
+
+    for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
+        for( int r_i = 0; r_i < 4 ; r_i++ ) {
+            bkp_mat[r_i][c_i] = mat[r_i][c_i];
+        }
+    }
+    calculateScore();
+}
+
+
+void Game2048::calculateScore( void ) {
+    int temp = 0;
+    for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
+        for( int r_i = 0; r_i < 4 ; r_i++ ) {
+            temp += mat[r_i][c_i];
+        }
+    }
+    currentScore = temp;
+}
+
+void Game2048::doAction( tGestureType gesture ) {
+    doCheckpoint();
+    doShift(gesture);
+    doSum(gesture);
+    doShift(gesture);
+    placeOnce();
+    countMoves++;
+    calculateScore();
 }
 
 void Game2048::doShift( tGestureType gesture ) {
+
     switch( gesture ) {
         case GESTURE_UP:
             for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
@@ -83,7 +112,33 @@ void Game2048::doShift( tGestureType gesture ) {
     }
 }
 
+
+void Game2048::doCheckpoint() {
+
+    for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
+        for( int r_i = 0; r_i < 4 ; r_i++ ) {
+            bkp_mat[r_i][c_i] = mat[r_i][c_i];
+        }
+    }
+    bkp_currentScore = currentScore;
+    bkp_countMoves = countMoves;
+
+}
+
+void Game2048::doUndo() {
+
+    for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
+        for( int r_i = 0; r_i < 4 ; r_i++ ) {
+            mat[r_i][c_i] = bkp_mat[r_i][c_i];
+        }
+    }
+    currentScore = bkp_currentScore;
+    countMoves = bkp_countMoves;
+
+}
+
 void Game2048::doSum( tGestureType gesture ) {
+
     switch( gesture ) {
         case GESTURE_UP:
             for( int c_i = 0 ; c_i < 4 ; c_i++ ) {
@@ -152,10 +207,9 @@ bool Game2048::placeOnce( void ) {
     }
 }
 
-int Game2048::printTable( void ) {
-    int sum = 0;
-        cout << endl;
-        cout << endl;
+void Game2048::printTable( void ) {
+    cout << endl;
+    cout << endl;
 
     for( int r_i = 0 ; r_i < 4 ; r_i++ ) {
         cout << "\t -----------------------------------------------------------------"<<endl;
@@ -168,12 +222,10 @@ int Game2048::printTable( void ) {
                 cout <<  "\t" << " " ;
             setColor( COLOR_RESET );
             cout <<  "\t |";
-            sum+= mat[r_i][c_i];
         }
         cout << endl;
     }
     cout << "\t -----------------------------------------------------------------"<<endl;
-    return sum;
 }
 
 int Game2048::wonOrLose( void ) {
@@ -184,7 +236,20 @@ int Game2048::wonOrLose( void ) {
     return 0;
 }
 
+/*
+ * User API to Get the Current Score
+ */
+int Game2048::getScore() {
+    return currentScore;
+}
 
+
+/*
+ * User API to Get the Move Count
+ */
+int Game2048::getCountMoves() {
+    return countMoves;
+}
 
 bool Game2048::anyFree( int mat[][4] ) {
     for( int r_i = 0 ; r_i < 4 ; r_i++ ) {
